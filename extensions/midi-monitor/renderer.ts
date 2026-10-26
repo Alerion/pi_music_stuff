@@ -16,12 +16,12 @@ export interface ChannelConfig {
 const DRUM_NAMES: Record<number, string> = {
 	36: "Kick",        // C1  - Pad 1
 	37: "Snare",       // C#1 - Pad 2
-	38: "HiHat",       // D1  - Pad 3
-	39: "HiHat Op",    // D#1 - Pad 4
-	40: "Tom",         // E1  - Pad 5
-	41: "Clap",        // F1  - Pad 6
-	42: "Rim",         // F#1 - Pad 7
-	43: "Bell",        // G1  - Pad 8
+	38: "Closed HH",   // D2  - Pad 3
+	39: "Open HH",     // D#2 - Pad 4
+	40: "Shaker/Rim",  // E2  - Pad 5
+	41: "Cowbell/Tom", // F2  - Pad 6
+	42: "Crash",       // F#2 - Pad 7
+	43: "Clap",        // G2  - Pad 8
 	44: "Perc 1",      // G#1 - Pad 9
 	45: "Perc 2",      // A1  - Pad 10
 	46: "Perc 3",      // A#1 - Pad 11

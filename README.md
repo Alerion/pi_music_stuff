@@ -8,6 +8,33 @@ Pi coding agent extensions, skills, and themes for music production.
 
 Real-time MIDI monitor for BeatStep Pro. Tracks incoming MIDI input, extracts step-sequencer patterns, and displays them in a TUI widget. Provides tools for the LLM to read and discuss patterns.
 
+## Skills
+
+### modulargrid
+
+Read public ModularGrid racks and module descriptions to maintain a private
+module inventory. Distinguishes module capabilities from actual per-channel
+patch allocation, preserves personal notes during refreshes, and supports
+lightweight patch-reference notes without designing patches by default.
+
+After loading this package, run `/reload`, then use `/skill:modulargrid` with a
+public rack URL or ask Pi to update an existing inventory. The bundled reader
+uses Python 3.12+ via `uv`, has no third-party Python dependencies, and prints
+JSON without modifying notes. Private rack data belongs in the consuming
+project, not this package.
+
+### equipment-manuals
+
+Find hardware manuals locally before browsing, then archive missing official
+PDF/HTML documents and searchable text in the consuming project. Preserves
+source/version information, validates downloads, and labels substitute manuals
+without mixing reference research with confirmed patch allocation.
+
+Run `/reload`, then ask a manual-dependent question or use
+`/skill:equipment-manuals <manufacturer and model>`. This is a lightweight
+instruction skill, not a downloader service; it uses available file/network
+and document-conversion tools. It carries no private inventories or manuals.
+
 ## Setup
 
 ### 1. Install dependencies

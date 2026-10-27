@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "description": "Pi coding agent extensions, skills, and themes for music production",
   "type": "module",
+  "scripts": {
+    "test": "node --experimental-strip-types --test tests/*.test.mjs"
+  },
   "keywords": [
     "pi-package",
     "pi-extension",

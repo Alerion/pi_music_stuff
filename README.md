@@ -8,6 +8,13 @@ Pi coding agent extensions, skills, and themes for music production.
 
 Real-time MIDI monitor for BeatStep Pro. Tracks incoming MIDI input, extracts step-sequencer patterns, and displays them in a TUI widget. Provides tools for the LLM to read and discuss patterns.
 
+Note names match BeatStep Pro octave numbering: **MIDI 48 = C2**, **MIDI 60 = C3**.
+This applies to the live widget, pattern reads, and note names passed to
+`midi_render_pattern`. Drum MIDI 36/37/38 are **C1/C#1/D1**. MIDI numbers and
+instrument assignments are unchanged; only the octave naming convention differs
+from applications that call MIDI 60 C4. Older monitor output used that C4 convention,
+so subtract one from its octave labels when reusing note names in new proposals.
+
 ## Skills
 
 ### modulargrid
@@ -108,6 +115,11 @@ If installation fails with `node-gyp` or missing ALSA header errors, install the
 build prerequisites above and rerun the command. If the native addon fails to
 load after changing Node.js versions, rerun it to reinstall dependencies for
 the current Node.js version.
+
+## Tests
+
+With Node.js 22.6+ (native TypeScript stripping), run `npm test`. These tests cover
+note-name conversion and pattern rendering without opening MIDI ports.
 
 ## License
 

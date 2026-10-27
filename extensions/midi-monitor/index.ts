@@ -12,24 +12,9 @@ import type { Theme } from "@mariozechner/pi-coding-agent";
 import { Type } from "@sinclair/typebox";
 import { StringEnum } from "@mariozechner/pi-ai";
 
-import { MidiMonitor, noteName, type PatternData, type NoteInfo, type PatternStep, type MonitorStatus, type MidiDevices } from "./midi-engine.js";
+import { MidiMonitor, type PatternData, type NoteInfo, type PatternStep, type MonitorStatus, type MidiDevices } from "./midi-engine.js";
+import { noteName, parseNoteToMidi } from "./note-names.js";
 import { type ChannelConfig, type VelocityStyler, renderWidget, renderPatternText, renderPatternLine, renderDrumLines } from "./renderer.js";
-
-/** Parse a note name like "C3", "C#2", "Db1" to a MIDI note number. Returns -1 if invalid. */
-function parseNoteToMidi(name: string): number {
-	const NOTE_MAP: Record<string, number> = {
-		"C": 0, "C#": 1, "Db": 1, "D": 2, "D#": 3, "Eb": 3, "E": 4, "Fb": 4,
-		"F": 5, "E#": 5, "F#": 6, "Gb": 6, "G": 7, "G#": 8, "Ab": 8,
-		"A": 9, "A#": 10, "Bb": 10, "B": 11, "Cb": 11,
-	};
-	const m = name.trim().match(/^([A-Ga-g][#b]?)(\-?\d+)$/);
-	if (!m) return -1;
-	const pc = NOTE_MAP[m[1][0].toUpperCase() + m[1].slice(1)];
-	if (pc === undefined) return -1;
-	const octave = parseInt(m[2]);
-	const midi = (octave + 1) * 12 + pc;
-	return (midi >= 0 && midi <= 127) ? midi : -1;
-}
 
 // Session entry types
 interface ChannelConfigEntry {
@@ -340,11 +325,12 @@ export default function midiMonitorExtension(pi: ExtensionAPI) {
 		label: "MIDI Read Pattern",
 		description:
 			"Read the currently detected MIDI pattern from a channel. Returns the step-by-step sequence " +
-			"with note names, velocities, and gate lengths. Use this to see what the user is playing on their BeatStep Pro.",
+			"with note names, velocities, and gate lengths. Note names match BeatStep Pro (MIDI 60 = C3). " +
+			"Use this to see what the user is playing on their BeatStep Pro.",
 		promptSnippet: "Read current MIDI pattern from a channel on BeatStep Pro",
 		promptGuidelines: [
 			"Use midi_read_pattern to see what the user is currently playing before suggesting changes.",
-			"When discussing patterns, refer to steps by number (1-16) and notes by name (C3, E3, etc.).",
+			"When discussing patterns, refer to steps by number (1-16) and use BeatStep Pro note names: MIDI 48 = C2, MIDI 60 = C3; drum MIDI 36 = C1.",
 			"For acid bass patterns, pay attention to note slides (consecutive notes) and accent (high velocity).",
 		],
 		parameters: Type.Object({
@@ -485,7 +471,8 @@ export default function midiMonitorExtension(pi: ExtensionAPI) {
 			"Render a proposed MIDI pattern using the same step-sequencer visualization as the live monitor widget. " +
 			"Use this to visually present pattern ideas to the user. Provide steps as an array of {step, note, velocity} objects. " +
 			"Empty steps are shown as '·'. Velocity affects visual weight: ≤50 = dim, 51-100 = normal, >100 = bold+accent. " +
-			"The pattern is rendered as a styled TUI component in the chat (same look as the MIDI Monitor widget).",
+			"The pattern is rendered as a styled TUI component in the chat (same look as the MIDI Monitor widget). " +
+			"Note names use BeatStep Pro octave numbering (MIDI 60 = C3).",
 		promptSnippet: "Render a proposed MIDI pattern visually for the user",
 		promptGuidelines: [
 			"Use midi_render_pattern to visually present pattern proposals to the user.",
@@ -501,7 +488,7 @@ export default function midiMonitorExtension(pi: ExtensionAPI) {
 			steps: Type.Array(
 				Type.Object({
 					step: Type.Number({ description: "Step number (1-based)" }),
-					note: Type.String({ description: "Note name, e.g. 'C3', 'F#2'. For drums use MIDI note names like 'C2' (kick=36), 'C#2' (snare=37), 'D2' (hihat=38)" }),
+					note: Type.String({ description: "BeatStep Pro note name (MIDI 60 = C3), e.g. 'C2', 'F#2'. For drums use 'C1' (kick=36), 'C#1' (snare=37), 'D1' (Closed HH=38)" }),
 					velocity: Type.Optional(Type.Number({ description: "Velocity 1-127 (default: 100)" })),
 				}),
 				{ description: "Array of step events. Steps not listed are silent." },

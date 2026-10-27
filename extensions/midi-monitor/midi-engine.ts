@@ -6,6 +6,9 @@
  */
 
 import midi from "@julusian/midi";
+import { noteName } from "./note-names.js";
+
+export { noteName } from "./note-names.js";
 
 // --- Constants ---
 const PPQN = 24; // MIDI clock pulses per quarter note
@@ -59,15 +62,6 @@ export interface MidiDevices {
 	inputs: string[];
 	outputs: string[];
 	active_inputs: string[];
-}
-
-// --- Helpers ---
-
-const NOTE_NAMES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
-
-export function noteName(midiNote: number): string {
-	const octave = Math.floor(midiNote / 12) - 1;
-	return `${NOTE_NAMES[midiNote % 12]}${octave}`;
 }
 
 // --- Note Event ---
